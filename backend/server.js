@@ -9,9 +9,8 @@ app.use(express.json());
 
 // Calculate Hyperperiod (LCM of all periods)
 function calculateHyperPeriod(tasks) {
-    const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
-    const lcm = (a, b) => (a * b) / gcd(a, b);
-    return tasks.reduce((acc, task) => lcm(acc, task.period), 1);
+    const maxPeriod = Math.max(...tasks.map(task => task.period));
+    return maxPeriod*5;
 }
 
 // Function to implement Rate Monotonic Scheduling (RM)
@@ -103,7 +102,7 @@ app.post('/schedule', (req, res) => {
         remainingTime: 0,
         deadline: 0
     }));
-
+    console.log(tasks);
     const hyperPeriod = calculateHyperPeriod(tasks);
 
     const { schedule: rmSchedule, stats: rmStats } = rateMonotonicScheduling(JSON.parse(JSON.stringify(tasks)), hyperPeriod);
